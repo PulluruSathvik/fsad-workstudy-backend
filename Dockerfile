@@ -23,11 +23,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-ubi9-minimal
 
 WORKDIR /app
-
 # Copy WAR from build stage
-
 COPY --from=build /app/target/*.war app.war
-
 EXPOSE 8080
-
-ENTRYPOINT ["java","-jar","app.war"]
+ENTRYPOINT ["java", "-jar", "app.war"]
