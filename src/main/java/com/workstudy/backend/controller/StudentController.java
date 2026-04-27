@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/students")
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
+@CrossOrigin(origins = {"*"})
 public class StudentController {
 
     @Autowired
@@ -46,6 +46,9 @@ public class StudentController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Account already exists with this email address.");
         }
 
+        if (student.getPassword() == null || !student.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+        }
         student.setPassword(encoder.encode(student.getPassword()));
 
         if (student.getRole() == null) {
@@ -129,6 +132,9 @@ public class StudentController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         if (s.getMfaCode() != null && s.getMfaCode().equals(code)) {
+            if (newPassword == null || !newPassword.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+            }
             s.setPassword(encoder.encode(newPassword));
             s.setMfaCode(null);
             studentRepository.save(s);

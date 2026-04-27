@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 
 @RestController
 @RequestMapping("/api/hours")
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
+@CrossOrigin(origins = {"*"})
 public class WorkHourController {
 
     @Autowired
@@ -38,7 +38,6 @@ public class WorkHourController {
 
     @Autowired
     private com.workstudy.backend.service.ReportService reportService;
-
     @PostMapping
     public WorkHour addHours(@RequestParam Long studentId,
                              @RequestParam Long jobId,
@@ -87,7 +86,6 @@ public class WorkHourController {
 
         return new org.springframework.http.ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
-
     @GetMapping("/student/{id}")
     public List<WorkHour> getStudentHours(@PathVariable Long id){
         return workHourRepository.findByStudentId(id);
